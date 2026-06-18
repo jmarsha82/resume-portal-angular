@@ -1,6 +1,8 @@
+const path = require('path');
+
 module.exports = function (config) {
   config.set({
-    basePath: '',
+    basePath: '../..',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),
@@ -17,7 +19,7 @@ module.exports = function (config) {
       suppressAll: true
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/resume-portal-angular'),
+      dir: path.join(__dirname, '../../coverage/resume-portal-angular'),
       subdir: '.',
       reporters: [
         { type: 'html' },

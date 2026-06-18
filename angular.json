@@ -73,6 +73,7 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "src/tests/karma.conf.js",
             "codeCoverage": true,
             "assets": [
               {

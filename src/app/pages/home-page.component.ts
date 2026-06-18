@@ -47,6 +47,7 @@ import { RouterLink } from '@angular/router';
           <span>Artist</span>
         </div>
         <div class="hero-actions">
+          <a class="button ghost" href="http://127.0.0.1:4100">Profile Select</a>
           <a class="button primary" routerLink="/programmer">View Programmer</a>
           <a class="button secondary" routerLink="/artist">View Artist</a>
         </div>

@@ -35,7 +35,9 @@ The production build outputs to `dist/resume-portal-angular`.
 npm run test:coverage
 ```
 
-Karma/Jasmine with ChromeHeadless is configured as the Angular test framework. Coverage is gated at 90% line coverage in `karma.conf.js`.
+Karma/Jasmine with ChromeHeadless is configured as the Angular test framework. Coverage is gated at 90% line coverage in `src/tests/karma.conf.js`.
+
+All specs, shared test helpers, and Karma configuration are centralized under `src/tests`. See `src/tests/README.md` for the suite layout and contribution rules.
 
 ## Environment
 
