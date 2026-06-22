@@ -1,6 +1,6 @@
 # Resume Portal Angular
 
-Angular front-end-only update of the resume portal. It preserves the programmer profile, artist profile imagery, developer resources, and adds a Games section with browser-native versions of BreakBricksGame, Snake, and Tetris.
+Angular front-end-only update of the resume portal. It preserves the programmer profile, artist profile imagery, developer resources, and adds a Games section with browser-native versions of BreakBricksGame, Snake, and Tetris plus the ML Pack workbench.
 
 ## Requirements
 
@@ -48,3 +48,4 @@ This app does not use a backend or database and does not require secrets. `.env.
 - Theme mode is saved in `localStorage` so dark/light mode persists during future visits.
 - Mobile layouts use a single-column flow and disable horizontal overflow.
 - The native C++ and Python game ideas were ported into TypeScript/canvas so the app remains static, secure, and browser playable.
+- ML Pack preserves its original React/Vite interface in a dedicated `/games/mlpack` page. It runs in demo mode without a backend; an optional local C++17/mlpack service can provide native computations when available.

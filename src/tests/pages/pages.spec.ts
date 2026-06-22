@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { ArtistPageComponent } from '../../app/pages/artist-page.component';
 import { GamesPageComponent } from '../../app/pages/games-page.component';
 import { HomePageComponent } from '../../app/pages/home-page.component';
+import { MlPackPageComponent } from '../../app/pages/ml-pack-page.component';
 import { ProgrammerPageComponent } from '../../app/pages/programmer-page.component';
 
 describe('Portfolio pages', () => {
@@ -48,18 +49,33 @@ describe('Portfolio pages', () => {
     expect(cards.every((card) => card.querySelector('h2') && card.querySelectorAll('p').length > 0)).toBeTrue();
   });
 
-  it('renders three games with original and web technology details', async () => {
+  it('renders the three arcade games and ML Pack with technology details', async () => {
     const fixture = await create(GamesPageComponent);
     const root = fixture.nativeElement as HTMLElement;
     const text = root.textContent ?? '';
 
-    expect(root.querySelectorAll('.game-choice').length).toBe(3);
+    expect(root.querySelectorAll('.game-choice').length).toBe(4);
     expect(text).toContain('BreakBricksGame');
     expect(text).toContain('Snake');
     expect(text).toContain('Tetris');
     expect(text).toContain('C++ and Raylib');
     expect(text).toContain('Python and Pygame');
     expect(text).toContain('Angular, TypeScript, HTML Canvas');
+    expect(text).toContain('ML Pack');
+    expect(text).toContain('React, JavaScript, Vite, and Lucide');
+    expect(text).toContain('C++17, CMake, and mlpack 4.x');
+    expect(root.querySelector('a[href="/games/mlpack"]')).not.toBeNull();
+  });
+
+  it('hosts the original ML Pack interface on its own page', async () => {
+    const fixture = await create(MlPackPageComponent);
+    const root = fixture.nativeElement as HTMLElement;
+    const frame = root.querySelector('iframe');
+
+    expect(root.textContent).toContain('Interactive machine-learning experiments');
+    expect(frame?.getAttribute('src')).toBe('/mlpack-studio/index.html');
+    expect(frame?.getAttribute('title')).toContain('mlpack Studio');
+    expect(frame?.getAttribute('sandbox')).toContain('allow-scripts');
   });
 });
 

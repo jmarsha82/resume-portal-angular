@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
   template: `
     <section class="page-heading">
       <h1>Games</h1>
-      <p>Desktop keyboard controls and mobile touch controls are built into each browser-native Angular canvas game.</p>
+      <p>Choose a browser-native arcade game or open the interactive ML Pack machine-learning workbench.</p>
     </section>
     <section class="game-menu">
       <a class="panel game-choice" routerLink="/games/breakbricks">
@@ -65,6 +65,25 @@ import { RouterLink } from '@angular/router';
           <div>
             <dt>Controls</dt>
             <dd>Keyboard, drag, swipe, and rotation gestures</dd>
+          </div>
+        </dl>
+      </a>
+      <a class="panel game-choice" routerLink="/games/mlpack">
+        <span>Lab 04</span>
+        <h2>ML Pack</h2>
+        <p>Configure datasets and explore classification, regression, clustering, anomaly detection, recommendations, and more.</p>
+        <dl class="tech-stack-list" aria-label="ML Pack tech stack">
+          <div>
+            <dt>Interface</dt>
+            <dd>React, JavaScript, Vite, and Lucide</dd>
+          </div>
+          <div>
+            <dt>Native Engine</dt>
+            <dd>C++17, CMake, and mlpack 4.x</dd>
+          </div>
+          <div>
+            <dt>Mode</dt>
+            <dd>Browser demo with optional local C++ computation</dd>
           </div>
         </dl>
       </a>
