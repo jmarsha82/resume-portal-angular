@@ -94,8 +94,12 @@ export class TetrisGameComponent implements AfterViewInit, OnDestroy {
     ctx.font = '18px Arial';
     ctx.fillText(`Score: ${this.engine.score}`, 322, 92);
     ctx.fillText(`Level: ${this.engine.level}`, 322, 122);
-    ctx.fillText('Next', 342, 190);
-    for (const [x, y] of this.engine.next.blocks) this.cell(ctx, x + 14, y + 8, this.engine.next.color, 24);
+    ctx.fillText('Next', 350, 204);
+    const minNextX = Math.min(...this.engine.next.blocks.map(([x]) => x));
+    const minNextY = Math.min(...this.engine.next.blocks.map(([, y]) => y));
+    for (const [x, y] of this.engine.next.blocks) {
+      this.cell(ctx, x - minNextX + 14.5, y - minNextY + 9, this.engine.next.color, 24);
+    }
     if (this.engine.gameOver) {
       ctx.fillStyle = 'rgba(8, 12, 22, .78)';
       ctx.fillRect(0, 0, 300, 600);

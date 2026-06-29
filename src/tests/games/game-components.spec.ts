@@ -89,7 +89,9 @@ describe('Game canvas components', () => {
     it('renders the next piece entirely in the side panel', async () => {
       await create(TetrisGameComponent);
       const previewCalls = (context.strokeRect as jasmine.Spy).calls.allArgs();
-      expect(previewCalls.some(([x, y, width]) => x === 336 && y >= 192 && width === 24)).toBeTrue();
+      const nextPieceCells = previewCalls.filter(([x, y, width]) => x >= 348 && y >= 216 && width === 24);
+      expect(nextPieceCells.length).toBeGreaterThanOrEqual(4);
+      expect(nextPieceCells.every(([x]) => x >= 300)).toBeTrue();
     });
 
     it('maps keyboard controls to engine commands', async () => {
