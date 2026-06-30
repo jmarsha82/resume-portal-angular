@@ -19,8 +19,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test-and-build:
-    name: Test, Coverage, and Build
+  unit-tests:
+    name: Unit Tests and Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -40,9 +40,6 @@ jobs:
       - name: Run unit tests with coverage
         run: npm run test:coverage
 
-      - name: Build production app
-        run: npm run build
-
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: always()
@@ -52,6 +49,28 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  build:
+    name: Production Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: unit-tests
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production app
+        run: npm run build
+
       - name: Upload production build
         uses: actions/upload-artifact@v4
         with:
@@ -59,3 +78,120 @@ jobs:
           path: dist/resume-portal-angular/
           if-no-files-found: error
           retention-days: 14
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+  dependency-audit:
+    name: npm Audit Advisory Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Report high severity npm advisories
+        run: npm audit --audit-level=high
+
+  code-scanning-quality:
+    name: Code Scanning / Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL quality analysis
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          analysis-kinds: code-scanning,code-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Analyze quality findings
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:javascript-typescript-quality'
+
+  code-scanning-security:
+    name: Code Scanning / Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL security analysis
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Analyze security findings
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:javascript-typescript-security'
+
+  ci-summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - unit-tests
+      - build
+      - dependency-audit
+      - code-scanning-quality
+      - code-scanning-security
+    if: always()
+
+    steps:
+      - name: Check required job results
+        run: |
+          echo "Unit tests: ${{ needs.unit-tests.result }}"
+          echo "Build: ${{ needs.build.result }}"
+          echo "Dependency audit: ${{ needs.dependency-audit.result }}"
+          echo "Code scanning quality: ${{ needs.code-scanning-quality.result }}"
+          echo "Code scanning security: ${{ needs.code-scanning-security.result }}"
+          test "${{ needs.unit-tests.result }}" = "success"
+          test "${{ needs.build.result }}" = "success"
+          test "${{ needs.code-scanning-quality.result }}" = "success"
+          test "${{ needs.code-scanning-security.result }}" = "success"
